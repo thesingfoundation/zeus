@@ -1,26 +1,29 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
-
+import Navbar from './Components/Navbar';
+import Home from './Components/Home';
+import States from './Components/Polling/States';
+import Lga from './Components/Polling/LGA';
+import Wards from './Components/Polling/Wards';
+import Units from './Components/Polling/Units';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <Router>
+        <div>
+        <Switch>
+          <Navbar>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/states" component={States} />
+            <Route exact path="/states/:id" component={Lga} />
+            <Route exact path="/states/:stateId/:lgaId" component={Wards} />
+            <Route exact path="/states/:stateId/:lgaId/:wardId" component={Units} />
+          </Navbar>
+        </Switch>
       </div>
+    </Router>
     );
   }
 }
