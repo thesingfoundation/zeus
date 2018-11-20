@@ -72,7 +72,7 @@ export default class Wards extends Component {
   }
   showElement (element, key) {
     return (
-      <div key={element.key} className='col-sm-4' >
+      <div key={element.key} className='col-sm-4' style={{marginTop:'20px'}}>
         <Paper key={key} elevation={2}>
           <div className='text-center'>
             <Link to={"/states/"+ this.props.match.params.stateId + '/' +this.props.match.params.lgaId + '/' + element.key}>
