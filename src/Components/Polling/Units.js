@@ -57,23 +57,64 @@ export default class Lga extends Component {
       unitId:this.state.unitId,
       reports:0
     }
-    let key = this.ref.push(data).key
-    data['key'] = key
-    this.elements.unshift(data)
-    this.statesRef.child(this.props.match.params.stateId).child('units').once('value', (units)=> {
-      units.ref.set(units.val() + 1)
-    })
-    this.lgaRef.child(this.props.match.params.lgaId).child('units').once('value', (units)=> {
-      units.ref.set(units.val() + 1)
-    })
-    this.wardsRef.child(this.props.match.params.wardId).child('units').once('value', (units)=> {
-      units.ref.set(units.val() + 1)
-    })
+    if (this.state.editing) {
+      this.ref.child(this.state.itemKey).update({
+        name:this.state.unit,
+        unitId:this.state.unitId
+      })
+      data['key'] = this.state.itemKey
+      this.elements[this.state.itemIndex] = data
+    }else{
+      let key = this.ref.push(data).key
+      data['key'] = key
+      this.elements.unshift(data)
+      this.statesRef.child(this.props.match.params.stateId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() + 1)
+      })
+      this.lgaRef.child(this.props.match.params.lgaId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() + 1)
+      })
+      this.wardsRef.child(this.props.match.params.wardId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() + 1)
+      })
+    }
     this.setState({elements:this.elements, lga:'', nounits:false})
     this.handleClose();
   }
   handleTextChange = (e) => {
     this.setState({[e.target.name]:e.target.value})
+  }
+  editUnit (element, key) {
+    this.setState({
+      editing:true,
+      unit:element.name,
+      unitId:element.unitId,
+      open:true,
+      itemKey:element.key,
+      itemIndex:key
+    })
+  }
+  deleteUnit(element) {
+    //eslint-disable-next-line
+    if (confirm("Are you sure you want to delete?")) {
+      this.ref.child(element.key).remove()
+      this.statesRef.child(this.props.match.params.stateId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() - 1)
+      })
+      this.lgaRef.child(this.props.match.params.lgaId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() - 1)
+      })
+      this.wardsRef.child(this.props.match.params.wardId).child('units').once('value', (units)=> {
+        units.ref.set(units.val() - 1)
+      })
+      this.elements = this.state.elements.filter((el)=> el.key !== element.key)
+      if (this.elements.length > 0) {
+        this.setState({elements:this.elements})
+      }else{
+        this.setState({elements:this.elements, nounits:true})
+      }
+
+    }
   }
   showElement () {
     return (
@@ -86,6 +127,7 @@ export default class Lga extends Component {
               <th>Unit Id</th>
               <th>Reports</th>
               <th>View</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -95,6 +137,11 @@ export default class Lga extends Component {
                 <td>{element.name}</td>
                 <td>{element.unitId}</td>
                 <td>{element.reports}</td>
+                <td><button className='btn btn-primary'>View</button></td>
+                <td>
+                  <span style={{cursor:'pointer', fontSize:'14px'}} onClick={()=>this.editUnit(element, key)}>Edit</span>&nbsp;&nbsp;
+                  <span style={{cursor:'pointer', fontSize:'14px'}} onClick={()=>this.deleteUnit(element)}>Delete</span>
+                </td>
               </tr>
             )}
           </tbody>
@@ -150,7 +197,7 @@ export default class Lga extends Component {
             </DialogContentText>
             <TextField
               id="with-placeholder"
-              label="Polling Unit Name"
+              //label="Polling Unit Name"
               placeholder="Enter polling unit"
               margin="normal"
               fullWidth={true}
@@ -160,7 +207,7 @@ export default class Lga extends Component {
             />
             <TextField
               id="with-placeholder"
-              label="Polling Unit Id"
+              //label="Polling Unit Id"
               placeholder="Enter polling unit id"
               margin="normal"
               fullWidth={true}
