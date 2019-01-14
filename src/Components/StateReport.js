@@ -83,6 +83,7 @@ export default class StateReport extends Component {
       activeIndex: 0,
       presentIndex:0,
     }
+    this.stateId = this.props.match.params.id
   }
   onPieEnter = (data, index) => {
     this.setState({

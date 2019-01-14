@@ -22,7 +22,7 @@ class App extends Component {
             <Route exact path="/states/:id" component={Lga} />
             <Route exact path="/states/:stateId/:lgaId" component={Wards} />
             <Route exact path="/states/:stateId/:lgaId/:wardId" component={Units} />
-            <Route exact path="/statereport" component={StateReport}/>
+            <Route exact path="/statereport/:id" component={StateReport}/>
             <Route exact path="/reports" component={Reports}/>
           </Navbar>
         </Switch>
