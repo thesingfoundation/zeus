@@ -22,8 +22,7 @@ export default class Home extends Component {
     this.electionItems()
     this.notification()
   }
-
-   electionItems() {
+  electionItems() {
      this.ref.once('value', (elements)=> {
        elements.forEach((element)=> {
          let temp_array = []
@@ -37,11 +36,10 @@ export default class Home extends Component {
          this.items.push(temp_array)
        })
        this.setState({items:this.items,loading:false})
-  console.log(this.items);
      })
    }
-   notification(){
-     this.reportRef.once('value',(reports)=>{
+  notification(){
+     this.reportRef.limitToFirst(4).once('value',(reports)=>{
        reports.forEach((report)=>{
          this.reports.push({
            key:report.key,
@@ -51,11 +49,9 @@ export default class Home extends Component {
            comments:report.val().comments,
           })
        this.setState({reports:this.reports})
-       console.log(this.reports);
        })
      })
    }
-
   render () {
     return (
       <div style={{marginTop:60}} className='col-sm-12'>
@@ -97,7 +93,7 @@ export default class Home extends Component {
                     <div  style={{ marginTop:5, borderBottom:'1px solid grey'}}>
                       <div style={{paddingLeft:10, paddingRight:10}}>
                         <span >{report.comments}</span>
-                      
+
                       </div>
                       <div className='row' style={{marginTop:5}}>
                         <div className='text-center col-12'>
@@ -109,7 +105,7 @@ export default class Home extends Component {
                       <div className='row' style={{marginTop:10}}>
                         <div className='col-5'></div>
                         <div className='col-7'>
-                          <p >{moment(report.report_time).format('LLL')}</p>
+                          <p >{moment(report.report_time).format('L')} {moment(report.report_time).format('LT')}</p>
                         </div>
                       </div>
                     </div>

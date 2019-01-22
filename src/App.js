@@ -10,8 +10,8 @@ import Wards from './Components/Polling/Wards';
 import Units from './Components/Polling/Units';
 import StateReport from './Components/StateReport';
 import Reports from './Components/Reports';
-import ReportComments from './Components/ReportComments'
-import Comment from './Components/Comment'
+import ReportComments from './Components/ReportComments';
+import Comment from './Components/Comment';
 class App extends Component {
   render() {
     return (

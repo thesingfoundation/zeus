@@ -9,15 +9,25 @@ class ReportComments extends Component {
     super(props)
     this.state = {
       actions:[],
+      start:50,
+      showMore:true
     }
    this.actions =[]
    this.stateId = this.props.match.params.id
    this.reportRef =firebase.database().ref().child('reports')
-
   }
    componentWillMount(){
-     this.reportRef.orderByChild('state').equalTo(this.props.match.params.id).once('value', (actions)=>{
+     //Use initial starting point of 50 items, update start value to see changes
+    this.getData(this.state.start)
+   }
+   getData (start) {
+     this.reportRef.orderByChild('state').equalTo(this.props.match.params.id).limitToFirst(start).once('value', (actions)=>{
+       //Reset actions array for every retrieval
+       this.actions = []
+       //Set counter to track if to show 'View More' Button
+       let counter = 0
        actions.forEach((action)=>{
+         counter += 1
          this.actions.push({
            action_type:action.val().action_type,
            report_time:action.val().report_time,
@@ -27,8 +37,15 @@ class ReportComments extends Component {
            key:action.key})
        })
        this.setState({actions:this.actions})
-
+       //If counter is less than start
+       if (counter < start) this.setState({showMore:false})
      })
+   }
+   showMore = () => {
+     let {start} = this.state
+     start += 1
+     this.getData(start)
+     this.setState({start})
    }
   render() {
     return (
@@ -45,27 +62,11 @@ class ReportComments extends Component {
                   </div>
                 </div>
               <p   style={{marginTop:15}}>{action.comments}</p>
-              <img style={{border: '1px solid #ddd',borderRadius:4, padding:5, width: 500,height:390,  marginBottom:20}} src={action.attachment}/>
+              {action.attachment !== '' &&   <img style={{border: '1px solid #ddd',borderRadius:4, padding:5, width: 500,height:390,  marginBottom:20}} src={action.attachment}/>}
             </div>
             )}
           </div>
-
-
-
-
-            <nav aria-label="Page navigation example" style={{marginTop:20}}>
-                <ul className="pagination justify-content-center">
-                  <li className="page-item ">
-                    <Link className="page-link" to="#" tabindex="-1">Previous</Link>
-                  </li>
-                  <li className="page-item"><a className="page-link" href="#">1</a></li>
-                  <li className="page-item"><a className="page-link" href="#">2</a></li>
-                  <li className="page-item"><a className="page-link" href="#">3</a></li>
-                  <li className="page-item">
-                    <Link className="page-link" to="#">Next</Link>
-                  </li>
-                </ul>
-              </nav>
+          {this.state.showMore && <div><h3 className='text-info text-center' onClick={this.showMore}>View More</h3></div>}
       </div>
 
 
