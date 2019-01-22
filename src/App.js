@@ -10,6 +10,8 @@ import Wards from './Components/Polling/Wards';
 import Units from './Components/Polling/Units';
 import StateReport from './Components/StateReport';
 import Reports from './Components/Reports';
+import ReportComments from './Components/ReportComments'
+import Comment from './Components/Comment'
 class App extends Component {
   render() {
     return (
@@ -24,6 +26,8 @@ class App extends Component {
             <Route exact path="/states/:stateId/:lgaId/:wardId" component={Units} />
             <Route exact path="/statereport/:id" component={StateReport}/>
             <Route exact path="/reports" component={Reports}/>
+            <Route exact path="/reportdetails/:id" component={ReportComments}/>
+            <Route exact path="/comment/:id" component={Comment}/>
           </Navbar>
         </Switch>
       </div>

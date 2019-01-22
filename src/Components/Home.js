@@ -2,33 +2,59 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend}  from 'recharts';
 import {Firebase} from '../Auth/Firebase';
+import moment from 'moment'
+import Timestamp from 'react-timestamp';
 const firebase = require('firebase');
 export default class Home extends Component {
   constructor (props) {
     super(props)
     this.state = {
       items:[],
+      reports:[],
       loading:true
     }
     this.ref = firebase.database().ref().child('stats')
+    this.reportRef= firebase.database().ref().child('reports')
     this.items = []
+    this.reports =[]
   }
   componentDidMount() {
-    this.ref.once('value', (elements)=> {
-      elements.forEach((element)=> {
-        let temp_array = []
-         temp_array.push({
-           name:element.val().name,
-           election:element.val().election,
-           preelection:element.val().preelection,
-           postelection:element.val().postelection,
-           key:element.key
-         })
-        this.items.push(temp_array)
-      })
-      this.setState({items:this.items,loading:false})
-    })
+    this.electionItems()
+    this.notification()
   }
+
+   electionItems() {
+     this.ref.once('value', (elements)=> {
+       elements.forEach((element)=> {
+         let temp_array = []
+          temp_array.push({
+            name:element.val().name,
+            election:element.val().election,
+            preelection:element.val().preelection,
+            postelection:element.val().postelection,
+            key:element.key
+          })
+         this.items.push(temp_array)
+       })
+       this.setState({items:this.items,loading:false})
+  console.log(this.items);
+     })
+   }
+   notification(){
+     this.reportRef.once('value',(reports)=>{
+       reports.forEach((report)=>{
+         this.reports.push({
+           key:report.key,
+           report_time:report.val().report_time,
+           attachment:report.val().attachment,
+           report_time:report.val().report_time,
+           comments:report.val().comments,
+          })
+       this.setState({reports:this.reports})
+       console.log(this.reports);
+       })
+     })
+   }
 
   render () {
     return (
@@ -65,63 +91,32 @@ export default class Home extends Component {
             <div className="card-header" style={{boxShadow: '  0 0 10px #000',}}>
                 <p style={{textAlign:'center', fontSize:26, fontWeight:'800', marginTop:10, }}>Notifications</p>
               </div>
+              {this.state.reports.map((report, key)=>
 
-              <div style={{border:'1px solid grey', borderRadius: '10'}}>
-                <div  style={{ marginTop:5, borderBottom:'1px solid grey'}}>
-                  <div style={{paddingLeft:10, paddingRight:10}}>
-                    <span >There has been election violence in the areas of bassanbiri town in nembe local government</span>
-                  </div>
-                  <div className='row' style={{marginTop:5}}>
-                    <div className='text-center col-12'>
-                      <button type="button" className="btn btn-success">Accept</button> &nbsp; &nbsp;
-                        <button type="button" className="btn btn-danger">Decline</button>
-                    </div>
+                  <div style={{border:'1px solid grey', borderRadius: '10'}}>
+                    <div  style={{ marginTop:5, borderBottom:'1px solid grey'}}>
+                      <div style={{paddingLeft:10, paddingRight:10}}>
+                        <span >{report.comments}</span>
+                      
+                      </div>
+                      <div className='row' style={{marginTop:5}}>
+                        <div className='text-center col-12'>
+                          <button type="button" className="btn btn-success">Accept</button> &nbsp; &nbsp;
+                            <button type="button" className="btn btn-danger">Decline</button>
+                        </div>
 
-                  </div>
-                  <div className='row'>
-                    <div className='col-9'></div>
-                    <div className='col-3'>
-                      <p >3:45pm</p>
+                      </div>
+                      <div className='row' style={{marginTop:10}}>
+                        <div className='col-5'></div>
+                        <div className='col-7'>
+                          <p >{moment(report.report_time).format('LLL')}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div  style={{ marginTop:5, borderBottom:'1px solid grey'}}>
-                  <div style={{paddingLeft:10, paddingRight:10}}>
-                    <span> There has been election violence in the areas of bassanbiri town in nembe local government</span>
-                  </div>
-                  <div className='row' style={{marginTop:5}}>
-                    <div className='text-center col-12'>
-                      <button type="button" className="btn btn-success">Accept</button> &nbsp; &nbsp;
-                        <button type="button" className="btn btn-danger">Decline</button>
-                    </div>
 
-                  </div>
-                  <div className='row'>
-                    <div className='col-9'></div>
-                    <div className='col-3'>
-                      <p >3:45pm</p>
-                    </div>
-                  </div>
-                </div>
-                <div  style={{ marginTop:5}}>
-                  <div style={{paddingLeft:10, paddingRight:10}}>
-                    <span> There has been election violence in the areas of bassanbiri town in nembe local government</span>
-                  </div>
-                  <div className='row' style={{marginTop:5}}>
-                    <div className='text-center col-12'>
-                      <button type="button" className="btn btn-success">Accept</button> &nbsp; &nbsp;
-                        <button type="button" className="btn btn-danger">Decline</button>
-                    </div>
+              )}
 
-                  </div>
-                  <div className='row'>
-                    <div className='col-9'></div>
-                    <div className='col-3'>
-                      <p >3:45pm</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div className='text-center'>
                 <Link  to='/reports' style={{color:'blue', margin:60}}>View more...</Link>
               </div>
