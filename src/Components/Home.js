@@ -39,7 +39,7 @@ export default class Home extends Component {
      })
    }
   notification(){
-     this.reportRef.limitToFirst(4).once('value',(reports)=>{
+     this.reportRef.limitToFirst(7).once('value',(reports)=>{
        reports.forEach((report)=>{
          this.reports.push({
            key:report.key,
@@ -88,24 +88,17 @@ export default class Home extends Component {
                 <p style={{textAlign:'center', fontSize:26, fontWeight:'800', marginTop:10, }}>Notifications</p>
               </div>
               {this.state.reports.map((report, key)=>
-
                   <div style={{border:'1px solid grey', borderRadius: '10'}}>
                     <div  style={{ marginTop:5, borderBottom:'1px solid grey'}}>
                       <div style={{paddingLeft:10, paddingRight:10}}>
                         <span >{report.comments}</span>
-
-                      </div>
-                      <div className='row' style={{marginTop:5}}>
-                        <div className='text-center col-12'>
-                          <button type="button" className="btn btn-success">Accept</button> &nbsp; &nbsp;
-                            <button type="button" className="btn btn-danger">Decline</button>
-                        </div>
-
                       </div>
                       <div className='row' style={{marginTop:10}}>
-                        <div className='col-5'></div>
-                        <div className='col-7'>
-                          <p >{moment(report.report_time).format('L')} {moment(report.report_time).format('LT')}</p>
+                        <div className='col-8'>
+                          <p style={{fontWeight:'700'}} >{moment(report.report_time).format('L')} {moment(report.report_time).format('LT')}</p>
+                        </div>
+                        <div className='col-4'>
+                          <Link to={'/comment/'+report.key}  className='btn btn-info'>View</Link>
                         </div>
                       </div>
                     </div>

@@ -19,6 +19,9 @@ export default class Navbar extends Component {
                 <Link className="nav-link" to="/reports">Reports</Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/false_reports">False Reports</Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/states" >Polling Units</Link>
               </li>
 

@@ -12,6 +12,7 @@ import StateReport from './Components/StateReport';
 import Reports from './Components/Reports';
 import ReportComments from './Components/ReportComments';
 import Comment from './Components/Comment';
+import FalseReports from './Components/False-reports';
 class App extends Component {
   render() {
     return (
@@ -25,6 +26,7 @@ class App extends Component {
             <Route exact path="/states/:stateId/:lgaId" component={Wards} />
             <Route exact path="/states/:stateId/:lgaId/:wardId" component={Units} />
             <Route exact path="/statereport/:id" component={StateReport}/>
+            <Route exact path="/false_reports/" component={FalseReports}/>
             <Route exact path="/reports" component={Reports}/>
             <Route exact path="/reportdetails/:id" component={ReportComments}/>
             <Route exact path="/comment/:id" component={Comment}/>
