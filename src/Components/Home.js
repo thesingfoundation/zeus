@@ -39,9 +39,9 @@ export default class Home extends Component {
      })
    }
   notification(){
-     this.reportRef.limitToFirst(7).once('value',(reports)=>{
+     this.reportRef.orderByChild('false_report').equalTo(false).limitToFirst(7).once('value',(reports)=>{
        reports.forEach((report)=>{
-         this.reports.push({
+         this.reports.unshift({
            key:report.key,
            report_time:report.val().report_time,
            attachment:report.val().attachment,
